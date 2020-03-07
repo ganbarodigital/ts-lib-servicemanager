@@ -1,8 +1,8 @@
 {
-  "name": "@ganbarodigital/<<YOUR-PACKAGE-NAME>>",
+  "name": "@ganbarodigital/ts-lib-servicemanager",
   "version": "0.0.1",
-  "description": "Converts human-readable UUIDs to bytes",
-  "repository": "github:ganbarodigital/<<YOUR-PACKAGE-NAME>>",
+  "description": "Factory-driven dependency injection (DI) container, based on Laminas ServiceManager",
+  "repository": "github:ganbarodigital/ts-lib-servicemanager",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "scripts": {
