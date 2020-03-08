@@ -20,7 +20,21 @@ __VS Code users:__ once you've added a single import anywhere in your project, y
 
 ## V1 API
 
-TBD.
+### DependencyNotFoundError
+
+```typescript
+export interface DependencyNotFoundExtraData {
+    logsOnly: {
+        serviceName: string;
+    };
+}
+
+export class DependencyNotFoundError extends AppError {
+    public constructor(params: DependencyNotFoundExtraData & AppErrorParams);
+}
+```
+
+`DependencyNotFoundError` is a throwable / catchable Javascript `Error`.
 
 ## NPM Scripts
 
