@@ -9,6 +9,7 @@ This TypeScript library provides a factory-driven dependency injection (DI) cont
 - [V1 API](#v1-api)
   - [ServiceManager](#servicemanager)
   - [AnyServiceManager](#anyservicemanager)
+  - [ServiceProducer](#serviceproducer)
   - [ServiceProvider](#serviceprovider)
   - [DependencyNotFoundError](#dependencynotfounderror)
 - [NPM Scripts](#npm-scripts)
@@ -162,6 +163,20 @@ const logger = container.get("logger") as MyLogger;
  */
 export type AnyServiceManager = ServiceManager<any>;
 ```
+
+### ServiceProducer
+
+```typescript
+import { AnyServiceManager } from "../ServiceManager";
+
+/**
+ * prototype for your factory functions
+ */
+export type ServiceProducer<T extends object>
+  = (container: AnyServiceManager, requestedName: string, options: object) => T;
+```
+
+`ServiceProducer` is a function type. Your factory functions (the functions that create new services) must match this type.
 
 ### ServiceProvider
 
