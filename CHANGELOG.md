@@ -26,6 +26,7 @@ The following changes have been completed, and will be included in the next tagg
 ### New
 
 * Added `DependencyNotFoundError` error class
+* Added `ServiceAction` function type
 * Added `ServiceProducer` function type
 * Added `ServiceProvider` function type
 * Added `ServiceManager` class

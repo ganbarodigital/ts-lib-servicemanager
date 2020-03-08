@@ -9,6 +9,7 @@ This TypeScript library provides a factory-driven dependency injection (DI) cont
 - [V1 API](#v1-api)
   - [ServiceManager](#servicemanager)
   - [AnyServiceManager](#anyservicemanager)
+  - [ServiceAction](#serviceaction)
   - [ServiceProducer](#serviceproducer)
   - [ServiceProvider](#serviceprovider)
   - [DependencyNotFoundError](#dependencynotfounderror)
@@ -163,6 +164,19 @@ const logger = container.get("logger") as MyLogger;
  */
 export type AnyServiceManager = ServiceManager<any>;
 ```
+
+### ServiceAction
+
+```typescript
+/**
+ * the prototype of any functional options
+ */
+export type ServiceAction<T extends object> = (service: T) => void;
+```
+
+`ServiceAction` is a function type. `ServiceAction`s are functions that modify the service after it has been created.
+
+You can pass a list of `ServiceAction`s to some `ServiceProvider`s.
 
 ### ServiceProducer
 
