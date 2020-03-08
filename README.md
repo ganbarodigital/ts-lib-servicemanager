@@ -14,6 +14,7 @@ This TypeScript library provides a factory-driven dependency injection (DI) cont
   - [ServiceProvider](#serviceprovider)
 - [ServiceProvider Builders](#serviceprovider-builders)
   - [Table Of ServiceProvider Builders](#table-of-serviceprovider-builders)
+  - [aliasFor()](#aliasfor)
   - [existingInstance()](#existinginstance)
 - [Errors](#errors)
   - [DependencyNotFoundError](#dependencynotfounderror)
@@ -42,7 +43,7 @@ __VS Code users:__ once you've added a single import anywhere in your project, y
 ### ServiceManager
 
 ```typescript
-export class ServiceManager<L extends ServicesList> {
+export class ServiceManager<L extends ServicesList = ServicesList> {
     /**
      * holds all of the services stored in the DI container
      */
@@ -217,7 +218,44 @@ We've added them to cover common behaviours.
 
 function             | Description | Supports ServiceActions
 ---------------------|-------------|-------------------------
+`aliasFor()`         | create an alias for an existing service | NO
 `existingInstance()` | always returns the same instance of a given service | NO
+
+### aliasFor()
+
+```typescript
+/**
+ * ServiceProvider builder - create an alias for an existing service
+ *
+ * The returned function will always call your container to get the
+ * requested service.
+ *
+ * @param container
+ *        your DI container
+ * @param name
+ *        the original name for the service
+ */
+export function aliasFor(container: AnyServiceManager, name: string): ServiceProvider<object>;
+```
+
+`aliasFor()` is a `ServiceProvider` builder. You give it your container, and the name of an existing service, and the returned `ServiceProvider` will always call `container.get(name)` to return the service.
+
+It allows you to give services multiple names. For example:
+
+```typescript
+const container = new ServiceManager({
+    MyLogger: sharedInstance(...),
+});
+container.addProvider("logger", aliasFor(container, "MyLogger"));
+
+// you can now do this, and it will be the same
+// as calling `container.get("MyLogger")`
+//
+// `logger` will have the type `object`
+const logger: container.get("logger");
+```
+
+Unfortunately, it currently isn't possible to get the return type information back to your code. You'll need to use type guards (recommended, but with a runtime cost) or typecasts (not recommended, as they override compile-time checks) to work with the resulting service.
 
 ### existingInstance()
 

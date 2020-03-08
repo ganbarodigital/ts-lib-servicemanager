@@ -52,7 +52,7 @@ export type AnyServiceManager = ServiceManager<any>;
  *
  * e.g. `class Injectables extends ServiceManager<MyServices> { ... }`
  */
-export class ServiceManager<L extends ServicesList> {
+export class ServiceManager<L extends ServicesList = ServicesList> {
     /**
      * holds all of the services stored in the DI container
      */
