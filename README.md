@@ -17,6 +17,7 @@ This TypeScript library provides a factory-driven dependency injection (DI) cont
   - [aliasFor()](#aliasfor)
   - [existingInstance()](#existinginstance)
   - [sharedInstance()](#sharedinstance)
+  - [uniqueInstance()](#uniqueinstance)
 - [Errors](#errors)
   - [DependencyNotFoundError](#dependencynotfounderror)
 - [NPM Scripts](#npm-scripts)
@@ -222,6 +223,7 @@ function             | Description | Supports ServiceActions
 `aliasFor()`         | create an alias for an existing service | NO
 `existingInstance()` | always returns the same instance of a given service | NO
 `sharedInstance()`   | builds a service using your factory, then returns the same instance of the service every time | YES
+`uniqueInstance()` | calls your factory to get a new copy of the service every time | YES
 
 ### aliasFor()
 
@@ -338,6 +340,59 @@ const logger = container.get("logger");
 // at this point, `myLoggerFactory()` HAS been called
 // it won't get called again, even if you do:
 const logger2 = container.get("logger");
+```
+
+### uniqueInstance()
+
+```typescript
+/**
+ * returns a ServiceProvider
+ *
+ * the returned function calls the provided `factory` to create the new
+ * service each and every time
+ *
+ * use this for when every caller should get a different instance of
+ * the service
+ *
+ * @param container
+ *        your DI container
+ * @param serviceName
+ *        the name that the service will be registered under in
+ *        the DI container
+ * @param factory
+ *        the function that will build the service
+ * @param options
+ *        a list of options to pass into the factory
+ * @param postInitActions
+ *        a list of functions to run after the factory has been called
+ */
+export function uniqueInstance<T extends object>(
+    container: AnyServiceManager,
+    requestedName: string,
+    factory: ServiceProducer<T>,
+    options: object = {},
+    postInitActions: Array<ServiceAction<T>> = [],
+): ServiceProvider<T>;
+```
+
+`uniqueInstance()` is a `ServiceProvider` builder. It uses the provided factory to build the service, everytime someone gets the service from your DI container.
+
+```typescript
+// create an empty DI container
+const container = new ServiceContainer({});
+
+// register a "logger" service with the DI container
+container.addProvider("logger", uniqueInstance(container, "logger", myLoggerFactory));
+
+// at this point, `myLoggerFactory()` has NOT been called
+
+const logger = container.get("logger");
+
+// at this point, `myLoggerFactory()` HAS been called
+
+const logger2 = container.get("logger");
+
+// and now `myLoggerFactory()` HAS been called again
 ```
 
 ## Errors

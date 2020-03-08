@@ -35,6 +35,7 @@ The following changes have been completed, and will be included in the next tagg
 * Added `aliasFor()` ServiceProvider builder
 * Added `existingService()` ServiceProvider builder
 * Added `sharedInstance()` ServiceProvider builder
+* Added `uniqueInstance()` ServiceProvider builder
 
 ### Fixes
 
