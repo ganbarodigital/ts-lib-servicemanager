@@ -26,6 +26,10 @@ The following changes have been completed, and will be included in the next tagg
 ### New
 
 * Added `DependencyNotFoundError` error class
+* Added `ServiceProvider` function type
+* Added `ServiceManager` class
+* Added `ServicesList` interface
+* Added `AnyServiceManager` type alias
 
 ### Fixes
 
