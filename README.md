@@ -6,12 +6,16 @@ This TypeScript library provides a factory-driven dependency injection (DI) cont
 
 - [Introduction](#introduction)
 - [Quick Start](#quick-start)
-- [V1 API](#v1-api)
+- [Core Types](#core-types)
   - [ServiceManager](#servicemanager)
   - [AnyServiceManager](#anyservicemanager)
   - [ServiceAction](#serviceaction)
   - [ServiceProducer](#serviceproducer)
   - [ServiceProvider](#serviceprovider)
+- [ServiceProvider Builders](#serviceprovider-builders)
+  - [Table Of ServiceProvider Builders](#table-of-serviceprovider-builders)
+  - [existingInstance()](#existinginstance)
+- [Errors](#errors)
   - [DependencyNotFoundError](#dependencynotfounderror)
 - [NPM Scripts](#npm-scripts)
   - [npm run clean](#npm-run-clean)
@@ -33,7 +37,7 @@ import { DiFactory } from "@ganbarodigital/ts-lib-servicemanager/lib/v1"
 
 __VS Code users:__ once you've added a single import anywhere in your project, you'll then be able to auto-import anything else that this library exports.
 
-## V1 API
+## Core Types
 
 ### ServiceManager
 
@@ -202,6 +206,43 @@ export type ServiceProvider<T extends object> = () => T;
 ```
 
 `ServiceProvider` is a function type. `ServiceProvider`s control the behaviour of the DI container, whenever you retrieve a service from the DI container.
+
+## ServiceProvider Builders
+
+_`ServiceProvider` builders_ are functions that create `ServiceProvider` functions for you.
+
+We've added them to cover common behaviours.
+
+### Table Of ServiceProvider Builders
+
+function             | Description | Supports ServiceActions
+---------------------|-------------|-------------------------
+`existingInstance()` | always returns the same instance of a given service | NO
+
+### existingInstance()
+
+```typescript
+/**
+ * ServiceProvider builder.
+ *
+ * The returned function will always return the given `service`.
+ *
+ * Use this to ensure that your DI container always returns the same instance
+ * of a service.
+ *
+ * @param service
+ *        the service that should always be returned
+ */
+export function existingInstance<T extends object>(service: T): ServiceProvider<T>;
+```
+
+`existingInstance()` is a `ServiceProvider` builder. You give it an instance of a service, and the returned `ServiceProvider` will always return that instance when called.
+
+It's used internally by the [`sharedInstance()`](#sharedinstance) `ServiceProvider` builder. `sharedInstance()` creates the new service, then caches that service in your DI container by replacing itself with the `existingInstance()` function instead.
+
+It's part of the public API. You're welcome to use it in your own code.
+
+## Errors
 
 ### DependencyNotFoundError
 

@@ -32,6 +32,7 @@ The following changes have been completed, and will be included in the next tagg
 * Added `ServiceManager` class
 * Added `ServicesList` interface
 * Added `AnyServiceManager` type alias
+* Added `existingService` ServiceProvider builder
 
 ### Fixes
 
