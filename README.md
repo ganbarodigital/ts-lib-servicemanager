@@ -16,6 +16,7 @@ This TypeScript library provides a factory-driven dependency injection (DI) cont
   - [Table Of ServiceProvider Builders](#table-of-serviceprovider-builders)
   - [aliasFor()](#aliasfor)
   - [existingInstance()](#existinginstance)
+  - [sharedInstance()](#sharedinstance)
 - [Errors](#errors)
   - [DependencyNotFoundError](#dependencynotfounderror)
 - [NPM Scripts](#npm-scripts)
@@ -220,6 +221,7 @@ function             | Description | Supports ServiceActions
 ---------------------|-------------|-------------------------
 `aliasFor()`         | create an alias for an existing service | NO
 `existingInstance()` | always returns the same instance of a given service | NO
+`sharedInstance()`   | builds a service using your factory, then returns the same instance of the service every time | YES
 
 ### aliasFor()
 
@@ -279,6 +281,64 @@ export function existingInstance<T extends object>(service: T): ServiceProvider<
 It's used internally by the [`sharedInstance()`](#sharedinstance) `ServiceProvider` builder. `sharedInstance()` creates the new service, then caches that service in your DI container by replacing itself with the `existingInstance()` function instead.
 
 It's part of the public API. You're welcome to use it in your own code.
+
+### sharedInstance()
+
+```typescript
+/**
+ * returns a ServiceProvider
+ *
+ * the returned function calls the provided `factory` to create the new
+ * service, and then makes sure that the same instance of the service is
+ * returned in future
+ *
+ * internally, it does this by replacing itself in the DI container with
+ * another ServiceProvider
+ *
+ * this guarantees that your `factory` is only called once, and it is only
+ * called the first time that someone tries to get this service from
+ * the DI container
+ *
+ * @param container
+ *        your DI container
+ * @param serviceName
+ *        the name that the service will be registered under in
+ *        the DI container
+ * @param factory
+ *        the function that will build the service
+ * @param options
+ *        a list of options to pass into the factory
+ * @param postInitActions
+ *        a list of functions to run after the factory has been called
+ */
+export function sharedInstance<T extends object>(
+    container: AnyServiceManager,
+    serviceName: string,
+    factory: ServiceProducer<T>,
+    options: object = {},
+    postInitActions: Array<ServiceAction<T>> = [],
+): ServiceProvider<T>;
+```
+
+`sharedInstance()` is a `ServiceProvider` builder. It uses the provided factory to build the service. No matter how many times you get the service from your DI container, it only calls the factory once.
+
+This is the classic behaviour of most DI containers.
+
+```typescript
+// create an empty DI container
+const container = new ServiceContainer({});
+
+// register a "logger" service with the DI container
+container.addProvider("logger", sharedInstance(container, "logger", myLoggerFactory));
+
+// at this point, `myLoggerFactory()` has NOT been called
+
+const logger = container.get("logger");
+
+// at this point, `myLoggerFactory()` HAS been called
+// it won't get called again, even if you do:
+const logger2 = container.get("logger");
+```
 
 ## Errors
 
