@@ -99,9 +99,9 @@ The main flaw in the article is that all of its arguments and examples are based
 
 (In 2010, the author may not have known that `static` singletons were terrible software design.)
 
-Setting aside the examples, the article's underlying premise is that it's bad software design to have silent dependencies. We certainly agree with that. If you can't look inside a piece of code, it's a genuine problem. You do have no way of knowing what dependencies the service relies on. Or, put more generically: *explicit code is always better than implicit code* in the long-run.
+Setting aside the examples, the article's underlying premise is that **it's bad software design to have silent dependencies**. We certainly agree with that. If _any_ piece of code has dependencies that you cannot see, you do have no way of knowing what dependencies the service relies on, until you run it and it falls over. That's a robustness issue, and it may not get caught until the code is in production.
 
-Fortunately, it's an easy problem to avoid in practice:
+That is not a problem with the _service locator pattern_. It's a problem caused by breaking the principle of encapsulation. Fortunately, it's an easy problem to avoid in practice:
 
 * pass the dependencies into your service's constructor, not the container itself,
 * use factories to decouple the service from the container,
