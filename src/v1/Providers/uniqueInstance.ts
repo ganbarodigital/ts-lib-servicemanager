@@ -32,6 +32,7 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //
 import { AnyServiceManager } from "../ServiceManager";
+import { OPTIONS_PREPARER_DEFAULT, OptionsPreparer } from "./OptionsPreparer";
 import { ServiceAction } from "./ServiceAction";
 import { ServiceProducer } from "./ServiceProducer";
 import { ServiceProvider } from "./ServiceProvider";
@@ -54,6 +55,10 @@ import { ServiceProvider } from "./ServiceProvider";
  *        the function that will build the service
  * @param options
  *        a list of options to pass into the factory
+ * @param optsProvider
+ *        a function to help prefer the options before they are passed
+ *        into the factory
+ *        the default function will create a DEEP CLONE of the options
  * @param postInitActions
  *        a list of functions to run after the factory has been called
  */
@@ -62,11 +67,19 @@ export function uniqueInstance<T extends object, O extends object>(
     requestedName: string,
     factory: ServiceProducer<T, O>,
     options: O,
+    optsProvider: OptionsPreparer<O> = OPTIONS_PREPARER_DEFAULT,
     postInitActions: Array<ServiceAction<T>> = [],
 ): ServiceProvider<T> {
     return (): T => {
+        // (possibly) clone the options
+        //
+        // it is VERY easy for the factory to forget about this, and
+        // accidentally embed a shared copy of the options within
+        // each new instance
+        const instanceOptions = optsProvider(options);
+
         // build the service
-        const service = factory(container, requestedName, options);
+        const service = factory(container, requestedName, instanceOptions);
 
         // run the actions we've been given
         postInitActions.forEach((action) => {

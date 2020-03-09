@@ -413,14 +413,19 @@ const logger2 = container.get("logger");
  *        the function that will build the service
  * @param options
  *        a list of options to pass into the factory
+ * @param optsProvider
+ *        a function to help prefer the options before they are passed
+ *        into the factory
+ *        the default function will create a DEEP CLONE of the options
  * @param postInitActions
  *        a list of functions to run after the factory has been called
  */
-export function uniqueInstance<T extends object, O extends object = object>(
+export function uniqueInstance<T extends object, O extends object>(
     container: AnyServiceManager,
     requestedName: string,
-    factory: ServiceProducer<T>,
+    factory: ServiceProducer<T, O>,
     options: O,
+    optsProvider: OptionsPreparer<O> = OPTIONS_PREPARER_DEFAULT,
     postInitActions: Array<ServiceAction<T>> = [],
 ): ServiceProvider<T>;
 ```

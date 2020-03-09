@@ -35,6 +35,7 @@ import { expect } from "chai";
 import { describe } from "mocha";
 
 import { AnyServiceManager, ServiceManager } from "../ServiceManager";
+import { OPTIONS_PREPARER_DEFAULT } from "./OptionsPreparer";
 import { uniqueInstance } from "./uniqueInstance";
 
 interface UnitTestServiceOptions {
@@ -62,13 +63,9 @@ describe("uniqueInstance()", () => {
         const myFactory = (diContainer: AnyServiceManager, name: string, options: UnitTestServiceOptions) => {
             factoryCallCount++;
 
-            // we have to create a COPY of the options
-            // VERY easy to forget to do this!
-            return {
-                options: {
-                    refCount: options.refCount,
-                },
-            };
+            // this is save, because uniqueInstance() guarantees that
+            // we get a unique copy of the options
+            return { options };
         };
         const myActions = [
             (service: UnitTestService) => {
@@ -82,7 +79,14 @@ describe("uniqueInstance()", () => {
         const container = new ServiceManager({});
         container.addProvider(
             "test1",
-            uniqueInstance(container, "test1", myFactory, { refCount: 0 }, myActions),
+            uniqueInstance(
+                container,
+                "test1",
+                myFactory,
+                { refCount: 0 },
+                OPTIONS_PREPARER_DEFAULT,
+                myActions,
+            ),
         );
 
         // this is our first action that should trigger the factory
@@ -103,13 +107,9 @@ describe("uniqueInstance()", () => {
         let actionsCalledCount = 0;
 
         const myFactory = (diContainer: AnyServiceManager, name: string, options: UnitTestServiceOptions) => {
-            // we have to create a COPY of the options
-            // VERY easy to forget to do this!
-            return {
-                options: {
-                    refCount: options.refCount,
-                },
-            };
+            // this is save, because uniqueInstance() guarantees that
+            // we get a unique copy of the options
+            return { options };
         };
         const myActions = [
             (service: UnitTestService) => {
@@ -125,7 +125,14 @@ describe("uniqueInstance()", () => {
         const container = new ServiceManager({});
         container.addProvider(
             "test1",
-            uniqueInstance(container, "test1", myFactory, { refCount: 0 }, myActions),
+            uniqueInstance(
+                container,
+                "test1",
+                myFactory,
+                { refCount: 0 },
+                OPTIONS_PREPARER_DEFAULT,
+                myActions,
+            ),
         );
 
         // prove that the returned service has been modified by the
