@@ -63,32 +63,35 @@ That causes problems in applications, where you often need everything to use the
 
 _Dependency injection_ solves this problem. The libraries and modules depend on shared interfaces, and your app passes in the actual utilities to use. These utilities normally come from a _dependency injection container_ (DI container for short), so that they get reused over and over rather than re-created.
 
+The question isn't if _dependency injection_ is good practice. It is. The question is: what kind of dependency injection suits you, your team, and your code base?
+
 ### Is An Alternative Better For You?
 
-There are other dependency injection libraries for TypeScript, and plenty of articles about how to write your own. The vast majority of these use `@decorators` to effectively create behaviour known as _auto-wiring_.
+There are other dependency injection libraries for TypeScript, and plenty of articles about how to write your own. The vast majority of these use `@decorators` to effectively emulate behaviour known as _auto-wiring_.
 
 You should definitely check them out. They might suit your needs better.
 
 ### The Case For The Service Locator Pattern
 
-Let's address this upfront.
-
 _ServiceManager_ is an implementation of the [service locator pattern](https://en.wikipedia.org/wiki/Service_locator_pattern).
 
-In brief, that means there's a central container that holds all the services. It's created once (when your app starts up), and then used over and over until your app shuts down.
+In brief, that means there's a central container that holds all the services. You create it once (when your app starts up), and then use it over and over until your app shuts down.
 
 (You _can_ have multiple DI containers. There's nothing in _ServiceManager_ to prevent that. In practice, we've never come across a reason to have more than one in your production app.)
 
 That means there's one place in your app to:
 
+* standardise how each service is created
 * find the list of available services
 * get a service that you need
 
-Having (for example) one place to go and get a Logger or a Database connection saves a lot of problems over the lifetime of an app. Any changes or maintenance needed? - only needs doing in the one place.
+Having (for example) one place to go and get a Logger or a Database connection saves a lot of problems over the lifetime of an app. Any changes or maintenance needed? That only needs doing in the one place.
 
 ### Isn't Service Locator An Anti-Pattern?
 
 You might have read [that the service locator is an anti-pattern, and should be avoided](https://blog.ploeh.dk/2010/02/03/ServiceLocatorisanAnti-Pattern/). We're going to address that in this part of the README.
+
+Obviously, we don't agree :)
 
 That article is 10 years old (at the time of writing this README), and we believe that it doesn't stand up to widespread practical experience in the years since. The PHP Community - one of the largest programming communities on Earth - has been successfully and safely using service locator-based DI containers for the last 7+ years.
 
@@ -96,24 +99,26 @@ The main flaw in the article is that all of its arguments and examples are based
 
 (In 2010, the author may not have known that `static` singletons were terrible software design.)
 
-Setting aside the examples, the article's underlying premise is that it's bad software design to have silent dependencies. We certainly agree with that. If you can't look inside a piece of code, it's a genuine problem. You do have no way of knowing what dependencies the service relies on.
+Setting aside the examples, the article's underlying premise is that it's bad software design to have silent dependencies. We certainly agree with that. If you can't look inside a piece of code, it's a genuine problem. You do have no way of knowing what dependencies the service relies on. Or, put more generically: *explicit code is always better than implicit code* in the long-run.
 
-Fortunately, it's an easy thing to avoid in practice:
+Fortunately, it's an easy problem to avoid in practice:
 
 * pass the dependencies into your service's constructor, not the container itself,
 * use factories to decouple the service from the container,
 * and don't use `static` singletons for your DI container in the first place
 
-In your app, it's _your_ factory that grabs any dependencies from the container - not your service's constructor. Your service should never ever see the container. Don't pass the container into your service, ever.
+In your app, it's _your_ factory that grabs any dependencies from the container - not your service's constructor. Your service should never ever see the container. *Don't pass the container into your service, ever*, and you'll be fine.
 
-And that's exactly what we've designed _ServiceManager_ for. It's based on the design of PHP's Laminas ServiceManager (originally known as Zend Framework ServiceManager), which has been tried and tested for over 5 years now.
+Do this, and you'll find that the other argument against _service locator_ - that it's hard to test - also doesn't stand up to scrutiny.
 
-Do this, and you'll also find that the other argument against _service locator_ - that it's hard to test - also doesn't stand up to scrutiny.
+* Your service doesn't know anything about the DI container, so there's no impact on testing there.
+* Your factories do need a populated DI container, but that's the only place where coupling occurs.
 
-* Your service doesn't know anything about the _service locator_, so there's no impact on testing there.
-* Your factories do need a working _service locator_, but that's the only place where coupling occurs.
+What happens in practice is that the tests for your factory also serve as extra, executable documentation of what dependencies your service needs, because the test needs to populate the DI container. It makes the list of dependencies explicit, in a way that even the service's constructor cannot.
 
-We've successfully - and safely - used factory-driven service locators on many projects, including a busy payment system for central government.
+We've successfully - and safely - used factory-driven service locators on many projects, including a busy payment system for central government. We've successfully handed these projects over to other developers, who had no difficulty in continuing to use factory-driven service locators long after we'd left the project.
+
+With _ServiceManager_, we're bringing this tried-and-proven approach to our TypeScript projects.
 
 ### The (Further) Case For Factories
 
