@@ -31,6 +31,7 @@
 // ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 //
+import { OPTIONS_PREPARER_DEFAULT, OptionsPreparer } from ".";
 import { AnyServiceManager, ServicesList } from "../ServiceManager";
 import { existingInstance } from "./existingInstance";
 import { ServiceAction } from "./ServiceAction";
@@ -60,6 +61,10 @@ import { ServiceProvider } from "./ServiceProvider";
  *        the function that will build the service
  * @param options
  *        a list of options to pass into the factory
+ * @param optsPreparer
+ *        a function to help prefer the options before they are passed
+ *        into the factory
+ *        the default function will create a DEEP CLONE of the options
  * @param postInitActions
  *        a list of functions to run after the factory has been called
  */
@@ -68,11 +73,19 @@ export function sharedInstance<T extends object, O extends object = object>(
     serviceName: string,
     factory: ServiceProducer<T, O>,
     options: O,
+    optsPreparer: OptionsPreparer<O> = OPTIONS_PREPARER_DEFAULT,
     postInitActions: Array<ServiceAction<T>> = [],
 ): ServiceProvider<T> {
     return (): T => {
+        // (possibly) clone the options
+        //
+        // it is VERY easy for the factory to forget about this, and
+        // accidentally embed a shared copy of the options within
+        // the service
+        const instanceOptions = optsPreparer(options);
+
         // build the service
-        const service = factory(container, serviceName, options);
+        const service = factory(container, serviceName, instanceOptions);
 
         // run the actions we've been given
         postInitActions.forEach((action) => {

@@ -360,14 +360,19 @@ It's part of the public API. You're welcome to use it in your own code.
  *        the function that will build the service
  * @param options
  *        a list of options to pass into the factory
+ * @param optsPreparer
+ *        a function to help prefer the options before they are passed
+ *        into the factory
+ *        the default function will create a DEEP CLONE of the options
  * @param postInitActions
  *        a list of functions to run after the factory has been called
  */
 export function sharedInstance<T extends object, O extends object = object>(
     container: AnyServiceManager,
     serviceName: string,
-    factory: ServiceProducer<T>,
+    factory: ServiceProducer<T, O>,
     options: O,
+    optsPreparer: OptionsPreparer<O> = OPTIONS_PREPARER_DEFAULT,
     postInitActions: Array<ServiceAction<T>> = [],
 ): ServiceProvider<T>;
 ```
@@ -392,6 +397,8 @@ const logger = container.get("logger");
 const logger2 = container.get("logger");
 ```
 
+By default, `sharedInstance()` passes a _clone_ of the `options` to your factory. This is so that you don't accidentally embed shared objects in your service. You can change this behaviour by passing `OPTIONS_PREPARER_NO_CLONE` in as the `optsPreparer` parameter.
+
 ### uniqueInstance()
 
 ```typescript
@@ -413,7 +420,7 @@ const logger2 = container.get("logger");
  *        the function that will build the service
  * @param options
  *        a list of options to pass into the factory
- * @param optsProvider
+ * @param optsPreparer
  *        a function to help prefer the options before they are passed
  *        into the factory
  *        the default function will create a DEEP CLONE of the options
@@ -425,7 +432,7 @@ export function uniqueInstance<T extends object, O extends object>(
     requestedName: string,
     factory: ServiceProducer<T, O>,
     options: O,
-    optsProvider: OptionsPreparer<O> = OPTIONS_PREPARER_DEFAULT,
+    optsPreparer: OptionsPreparer<O> = OPTIONS_PREPARER_DEFAULT,
     postInitActions: Array<ServiceAction<T>> = [],
 ): ServiceProvider<T>;
 ```
@@ -449,6 +456,8 @@ const logger2 = container.get("logger");
 
 // and now `myLoggerFactory()` HAS been called again
 ```
+
+By default, `uniqueInstance()` passes a _clone_ of the `options` to your factory. This is so that you don't accidentally embed shared objects in your service. You can change this behaviour by passing `OPTIONS_PREPARER_NO_CLONE` in as the `optsPreparer` parameter.
 
 ## Errors
 

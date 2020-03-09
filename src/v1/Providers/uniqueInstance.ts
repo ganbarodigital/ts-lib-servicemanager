@@ -55,7 +55,7 @@ import { ServiceProvider } from "./ServiceProvider";
  *        the function that will build the service
  * @param options
  *        a list of options to pass into the factory
- * @param optsProvider
+ * @param optsPreparer
  *        a function to help prefer the options before they are passed
  *        into the factory
  *        the default function will create a DEEP CLONE of the options
@@ -67,7 +67,7 @@ export function uniqueInstance<T extends object, O extends object>(
     requestedName: string,
     factory: ServiceProducer<T, O>,
     options: O,
-    optsProvider: OptionsPreparer<O> = OPTIONS_PREPARER_DEFAULT,
+    optsPreparer: OptionsPreparer<O> = OPTIONS_PREPARER_DEFAULT,
     postInitActions: Array<ServiceAction<T>> = [],
 ): ServiceProvider<T> {
     return (): T => {
@@ -76,7 +76,7 @@ export function uniqueInstance<T extends object, O extends object>(
         // it is VERY easy for the factory to forget about this, and
         // accidentally embed a shared copy of the options within
         // each new instance
-        const instanceOptions = optsProvider(options);
+        const instanceOptions = optsPreparer(options);
 
         // build the service
         const service = factory(container, requestedName, instanceOptions);

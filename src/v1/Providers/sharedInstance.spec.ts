@@ -35,6 +35,7 @@ import { expect } from "chai";
 import { describe } from "mocha";
 
 import { AnyServiceManager, ServiceManager } from "../ServiceManager";
+import { OPTIONS_PREPARER_DEFAULT } from "./OptionsPreparer";
 import { ServiceProducer } from "./ServiceProducer";
 import { sharedInstance } from "./sharedInstance";
 
@@ -116,7 +117,14 @@ describe("sharedInstance()", () => {
         const container = new ServiceManager({});
         container.addProvider(
             "test1",
-            sharedInstance(container, "test1", myFactory, { refCount: 0 }, myActions),
+            sharedInstance(
+                container,
+                "test1",
+                myFactory,
+                { refCount: 0 },
+                OPTIONS_PREPARER_DEFAULT,
+                myActions,
+            ),
         );
 
         const instance1 = container.get("test1") as UnitTestService;
