@@ -193,8 +193,8 @@ import { AnyServiceManager } from "../ServiceManager";
 /**
  * prototype for your factory functions
  */
-export type ServiceProducer<T extends object>
-  = (container: AnyServiceManager, requestedName: string, options: object) => T;
+export type ServiceProducer<T extends object, O extends object = object>
+  = (container: AnyServiceManager, requestedName: string, options: O) => T;
 ```
 
 `ServiceProducer` is a function type. Your factory functions (the functions that create new services) must match this type.
@@ -313,11 +313,11 @@ It's part of the public API. You're welcome to use it in your own code.
  * @param postInitActions
  *        a list of functions to run after the factory has been called
  */
-export function sharedInstance<T extends object>(
+export function sharedInstance<T extends object, O extends object = object>(
     container: AnyServiceManager,
     serviceName: string,
     factory: ServiceProducer<T>,
-    options: object = {},
+    options: O,
     postInitActions: Array<ServiceAction<T>> = [],
 ): ServiceProvider<T>;
 ```
@@ -331,7 +331,7 @@ This is the classic behaviour of most DI containers.
 const container = new ServiceContainer({});
 
 // register a "logger" service with the DI container
-container.addProvider("logger", sharedInstance(container, "logger", myLoggerFactory));
+container.addProvider("logger", sharedInstance(container, "logger", myLoggerFactory, {}));
 
 // at this point, `myLoggerFactory()` has NOT been called
 
@@ -366,11 +366,11 @@ const logger2 = container.get("logger");
  * @param postInitActions
  *        a list of functions to run after the factory has been called
  */
-export function uniqueInstance<T extends object>(
+export function uniqueInstance<T extends object, O extends object = object>(
     container: AnyServiceManager,
     requestedName: string,
     factory: ServiceProducer<T>,
-    options: object = {},
+    options: O,
     postInitActions: Array<ServiceAction<T>> = [],
 ): ServiceProvider<T>;
 ```
@@ -382,7 +382,7 @@ export function uniqueInstance<T extends object>(
 const container = new ServiceContainer({});
 
 // register a "logger" service with the DI container
-container.addProvider("logger", uniqueInstance(container, "logger", myLoggerFactory));
+container.addProvider("logger", uniqueInstance(container, "logger", myLoggerFactory, {}));
 
 // at this point, `myLoggerFactory()` has NOT been called
 

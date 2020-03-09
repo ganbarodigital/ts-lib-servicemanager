@@ -36,5 +36,5 @@ import { AnyServiceManager } from "../ServiceManager";
 /**
  * prototype for your factory functions
  */
-export type ServiceProducer<T extends object>
-  = (container: AnyServiceManager, requestedName: string, options: object) => T;
+export type ServiceProducer<T extends object, O extends object = object>
+  = (container: AnyServiceManager, requestedName: string, options: O) => T;

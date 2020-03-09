@@ -35,48 +35,63 @@ import { expect } from "chai";
 import { describe } from "mocha";
 
 import { AnyServiceManager, ServiceManager } from "../ServiceManager";
+import { ServiceProducer } from "./ServiceProducer";
 import { sharedInstance } from "./sharedInstance";
 
+interface UnitTestServiceOptions {
+    refCount: number;
+}
+
 interface UnitTestService {
-    options: object;
+    options: UnitTestServiceOptions;
 }
 
 describe("sharedInstance()", () => {
     it("builds a ServiceProvider", () => {
-        const myFactory = (diContainer: AnyServiceManager, name: string, options: object) => {
+        const myFactory: ServiceProducer<UnitTestService, UnitTestServiceOptions> = (
+            diContainer: AnyServiceManager,
+            name: string,
+            options: UnitTestServiceOptions,
+        ): UnitTestService => {
             return { options };
         };
 
         const container = new ServiceManager({});
-        const unit = sharedInstance(container, "test1", myFactory, {});
+        const unit = sharedInstance(container, "test1", myFactory, { refCount: 0 });
 
         expect(unit).to.be.instanceOf(Function);
     });
 
     it("builds a ServiceProvider that always returns the same instance", () => {
-        const myFactory = (diContainer: AnyServiceManager, name: string, options: object) => {
+        const myFactory = (diContainer: AnyServiceManager, name: string, options: UnitTestServiceOptions) => {
             return { options };
         };
 
         const container = new ServiceManager({});
-        container.addProvider("test1", sharedInstance(container, "test1", myFactory));
+        container.addProvider(
+            "test1",
+            sharedInstance(container, "test1", myFactory, { refCount: 0 }),
+        );
 
         const instance1 = container.get("test1") as UnitTestService;
         const instance2 = container.get("test1") as UnitTestService;
 
-        instance1.options = { changed: true };
+        instance1.options.refCount = 2;
         expect(instance1).to.eql(instance2);
     });
 
     it("the returned ServiceProvider only calls the factory once", () => {
         let refCount = 0;
-        const myFactory = (diContainer: AnyServiceManager, name: string, options: object) => {
+        const myFactory = (diContainer: AnyServiceManager, name: string, options: UnitTestServiceOptions) => {
             refCount++;
             return { options };
         };
 
         const container = new ServiceManager({});
-        container.addProvider("test1", sharedInstance(container, "test1", myFactory));
+        container.addProvider(
+            "test1",
+            sharedInstance(container, "test1", myFactory, { refCount: 2 }),
+        );
 
         const instance1 = container.get("test1");
         const instance2 = container.get("test1");

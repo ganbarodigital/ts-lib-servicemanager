@@ -57,11 +57,11 @@ import { ServiceProvider } from "./ServiceProvider";
  * @param postInitActions
  *        a list of functions to run after the factory has been called
  */
-export function uniqueInstance<T extends object>(
+export function uniqueInstance<T extends object, O extends object>(
     container: AnyServiceManager,
     requestedName: string,
-    factory: ServiceProducer<T>,
-    options: object = {},
+    factory: ServiceProducer<T, O>,
+    options: O,
     postInitActions: Array<ServiceAction<T>> = [],
 ): ServiceProvider<T> {
     return (): T => {

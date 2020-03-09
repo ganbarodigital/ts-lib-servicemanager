@@ -57,7 +57,7 @@ describe("uniqueInstance()", () => {
         };
 
         const container = new ServiceManager({});
-        container.addProvider("test1", uniqueInstance(container, "test1", myFactory));
+        container.addProvider("test1", uniqueInstance(container, "test1", myFactory, {}));
 
         container.get("test1");
         expect(refCount).to.equal(1);
