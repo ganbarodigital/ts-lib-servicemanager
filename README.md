@@ -38,7 +38,7 @@ npm install @ganbarodigital/ts-lib-servicemanager
 
 ```typescript
 // add this import to your Typescript code
-import { DiFactory } from "@ganbarodigital/ts-lib-servicemanager/lib/v1"
+import { ServiceManager } from "@ganbarodigital/ts-lib-servicemanager/lib/v1"
 ```
 
 __VS Code users:__ once you've added a single import anywhere in your project, you'll then be able to auto-import anything else that this library exports.
