@@ -26,6 +26,9 @@ The following changes have been completed, and will be included in the next tagg
 ### New
 
 * Added `DependencyNotFoundError` error class
+* Added `OptionsPreparer` function type
+* Added `OPTIONS_PREPARER_DEFAULT` function
+* Added `OPTIONS_PREPARER_NO_CLONE` function
 * Added `ServiceAction` function type
 * Added `ServiceProducer` function type
 * Added `ServiceProvider` function type
@@ -40,6 +43,8 @@ The following changes have been completed, and will be included in the next tagg
 ### Fixes
 
 ### Dependencies
+
+* Added `rfdc`
 
 ### Tools
 

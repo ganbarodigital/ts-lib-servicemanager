@@ -31,15 +31,34 @@
 // ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 //
+import { expect } from "chai";
+import { describe } from "mocha";
 
-// our types
-export * from "./OptionsPreparer";
-export * from "./ServiceAction";
-export * from "./ServiceProducer";
-export * from "./ServiceProvider";
+import { OPTIONS_PREPARER_DEFAULT, OPTIONS_PREPARER_NO_CLONE } from "./OptionsPreparer";
 
-// our ServiceProvider builders
-export * from "./aliasFor";
-export * from "./existingInstance";
-export * from "./sharedInstance";
-export * from "./uniqueInstance";
+describe("OPTIONS_PREPARER_DEFAULT()", () => {
+    it("returns a clone of the provided object", () => {
+        const inputValue = { outer: { inner: 0 } };
+        const actualValue = OPTIONS_PREPARER_DEFAULT(inputValue);
+
+        // at first, both objects should be the same
+        expect(actualValue).to.eqls(inputValue);
+
+        actualValue.outer.inner = 5;
+        expect(actualValue).to.not.eqls(inputValue);
+    });
+});
+
+describe("OPTIONS_PREPARER_NO_CLONE()", () => {
+    it("returns the provided object", () => {
+        const inputValue = { outer: { inner: 0 } };
+        const actualValue = OPTIONS_PREPARER_NO_CLONE(inputValue);
+
+        // at first, both objects should be the same
+        expect(actualValue).to.eqls(inputValue);
+
+        // both objects should still be the same
+        actualValue.outer.inner = 5;
+        expect(actualValue).to.eqls(inputValue);
+    });
+});

@@ -12,6 +12,9 @@ This TypeScript library provides a factory-driven dependency injection (DI) cont
   - [ServiceAction](#serviceaction)
   - [ServiceProducer](#serviceproducer)
   - [ServiceProvider](#serviceprovider)
+  - [OptionsPreparer](#optionspreparer)
+  - [OPTIONS_PREPARER_DEFAULT](#options_preparer_default)
+  - [OPTIONS_PREPARPER_NO_CLONE](#options_preparper_no_clone)
 - [ServiceProvider Builders](#serviceprovider-builders)
   - [Table Of ServiceProvider Builders](#table-of-serviceprovider-builders)
   - [aliasFor()](#aliasfor)
@@ -209,6 +212,53 @@ export type ServiceProvider<T extends object> = () => T;
 ```
 
 `ServiceProvider` is a function type. `ServiceProvider`s control the behaviour of the DI container, whenever you retrieve a service from the DI container.
+
+### OptionsPreparer
+
+```typescript
+/**
+ * an OptionsPreparer returns a (possibly modified) instance of
+ * the object you call it with
+ *
+ * putting this into function form allows us to swap out the behaviour
+ * of how we prepare options that are passed to ServiceProducers
+ */
+export type OptionsPreparer<T extends object> = (options: T) => T;
+```
+
+`OptionsPreparer` is a function type. `OptionPreparer`s are used by `ServiceProvider` functions to make any necessary changes to the options before they are passed into your factory.
+
+We currently ship two functions that do this job:
+
+Function                  | Purpose
+--------------------------|--------------------
+[OPTIONS_PREPARER_DEFAULT](#options_preparer_default)  | Create deep clone of the options object
+[OPTIONS_PREPARER_NO_CLONE](#options_preparper_no_clone) | Returns the options object without modification
+
+We added the `OptionsPreparer` feature because it's really easy to accidentally embed a shared copy of the options in your service. That's probably not the behaviour you want, especially for the `uniqueInstance()` `ServiceProvider` builder.
+
+### OPTIONS_PREPARER_DEFAULT
+
+```typescript
+/**
+ * our default OptionsPreparer
+ *
+ * it returns a DEEP CLONE of the provided object
+ */
+export function OPTIONS_PREPARER_DEFAULT<T extends object>(options: T): T;
+```
+
+### OPTIONS_PREPARPER_NO_CLONE
+
+```typescript
+/**
+ * an alternative OptionsPreparer
+ *
+ * it returns the same object instance that you call it with
+ * (ie it DOES NOT create a clone of any kind)
+ */
+export function OPTIONS_PREPARER_NO_CLONE<T extends object>(options: T): T;
+```
 
 ## ServiceProvider Builders
 

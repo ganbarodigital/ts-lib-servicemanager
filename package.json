@@ -29,6 +29,8 @@
     "@ganbarodigital/ts-lib-http-types": "^0.1.5",
     "@ganbarodigital/ts-lib-packagename": "^0.2.3",
     "@types/node": "^13.1.2",
+    "@types/rfdc": "^1.1.0",
+    "rfdc": "^1.1.4",
     "tslint": "^5.20.1",
     "typescript": "^3.8.0"
   },

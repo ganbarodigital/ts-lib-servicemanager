@@ -32,14 +32,33 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //
 
-// our types
-export * from "./OptionsPreparer";
-export * from "./ServiceAction";
-export * from "./ServiceProducer";
-export * from "./ServiceProvider";
+// tslint:disable-next-line: no-var-requires
+const rfdc = require("rfdc")();
 
-// our ServiceProvider builders
-export * from "./aliasFor";
-export * from "./existingInstance";
-export * from "./sharedInstance";
-export * from "./uniqueInstance";
+/**
+ * an OptionsPreparer returns a (possibly modified) instance of
+ * the object you call it with
+ *
+ * putting this into function form allows us to swap out the behaviour
+ * of how we prepare options that are passed to ServiceProducers
+ */
+export type OptionsPreparer<T extends object> = (options: T) => T;
+
+/**
+ * our default OptionsPreparer
+ *
+ * it returns a DEEP CLONE of the provided object
+ */
+export function OPTIONS_PREPARER_DEFAULT<T extends object>(options: T): T {
+    return rfdc(options) as T;
+}
+
+/**
+ * an alternative OptionsPreparer
+ *
+ * it returns the same object instance that you call it with
+ * (ie it DOES NOT create a clone of any kind)
+ */
+export function OPTIONS_PREPARER_NO_CLONE<T extends object>(options: T): T {
+    return options;
+}
