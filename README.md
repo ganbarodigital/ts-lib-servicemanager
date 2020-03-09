@@ -99,7 +99,7 @@ The main flaw in the article is that all of its arguments and examples are based
 
 (In 2010, the author may not have known that `static` singletons were terrible software design.)
 
-Setting aside the examples, the article's underlying premise is that **it's bad software design to have silent dependencies**. We certainly agree with that. If _any_ piece of code has dependencies that you cannot see, you do have no way of knowing what dependencies the service relies on, until you run it and it falls over. That's a robustness issue, and it may not get caught until the code is in production.
+Setting aside the examples, the article's underlying premise is that **it's bad software design to have silent dependencies**. We certainly agree with that. If _any_ piece of code has dependencies that you cannot see at compile-time, you have no way of knowing what dependencies the service relies on, until you run it and it falls over. That's a _robustness_ issue, and it may not get caught until the code is in production.
 
 That is not a problem with the _service locator pattern_. It's a problem caused by breaking the principle of encapsulation.
 
@@ -144,9 +144,9 @@ You end up either:
 * using typecasts (such as `as XXX`) to tell the compiler to trust that you have the right object from the DI container, or
 * using type guards to prove to the compiler that you have the object you asked the DI container for
 
-Typecasts are dangerous as hell. *They transfer all the risk to when your code runs*. If there's a problem, you only find out about it when your code goes bang.
+Typecasts are dangerous as hell in TypeScript. **They transfer all the risk to when your code runs**. If there's a problem, you only find out about it when your code goes bang.
 
-Type guards are safe, but *they transfer all the costs to when your code runs*. Every time you retrieve a service from the DI container, those guards have to be run. Those costs quickly add up, and slow down your app.
+Type guards are safe, but **they transfer all the costs to when your code runs**. Every time you retrieve a service from the DI container, those guards have to be run. Those costs quickly add up, and slow down your app.
 
 With ServiceManager, we've found a way to make it hold different types of object _and_ still have compile-time type information that you can trust.
 
