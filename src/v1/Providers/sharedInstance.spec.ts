@@ -99,4 +99,30 @@ describe("sharedInstance()", () => {
         expect(refCount).to.equal(1);
         expect(instance1).to.eql(instance2);
     });
+
+    it("the returned ServiceProvider applies the postInitActions", () => {
+        const myFactory = (diContainer: AnyServiceManager, name: string, options: UnitTestServiceOptions) => {
+            return { options };
+        };
+        const myActions = [
+            (service: UnitTestService) => {
+                service.options.refCount++;
+            },
+            (service: UnitTestService) => {
+                service.options.refCount += 5;
+            },
+        ];
+
+        const container = new ServiceManager({});
+        container.addProvider(
+            "test1",
+            sharedInstance(container, "test1", myFactory, { refCount: 0 }, myActions),
+        );
+
+        const instance1 = container.get("test1") as UnitTestService;
+        const instance2 = container.get("test1") as UnitTestService;
+
+        expect(instance1.options.refCount).to.equal(6);
+        expect(instance1).to.eql(instance2);
+    });
 });
