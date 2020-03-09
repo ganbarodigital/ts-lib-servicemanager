@@ -148,15 +148,17 @@ Typecasts are dangerous as hell in TypeScript. **They transfer all the risk to w
 
 Type guards are safe, but **they transfer all the costs to when your code runs**. Every time you retrieve a service from the DI container, those guards have to be run. Those costs quickly add up, and slow down your app.
 
-With ServiceManager, we've found a way to make it hold different types of object _and_ still have compile-time type information that you can trust.
+With _ServiceManager_, we've found a way to make it hold different types of object _and_ still have compile-time type information that you can trust. Provided you know in advance what services you want to register, you can rely on the TypeScript compiler to eliminate both the runtime risk and the runtime cost.
 
 ### Highly Customisable
 
-At its heart, the ServiceManager is an object that calls a function to retrieve your service object. _You_ decide which function it calls for each service.
+At its heart, the _ServiceManager_ is an object that calls a function to retrieve your service object. _You_ decide which function it calls for each service.
 
-And that means *you can customise it to behave however you need*.
+And that means **you can customise it to behave however you need**.
 
-We've shipped [a bunch of pre-built functions](#table-of-serviceprovider-builders) that cover the behaviours you'll probably want the most. If you need something different, there's nothing stopping you from writing your own functions (called [`ServiceProvider` builders](#serviceprovider-builders)) as well.
+We've shipped [a bunch of pre-built functions](#table-of-serviceprovider-builders) that cover the behaviours you'll probably want the most. They're based on the behaviours that we regularly use in the Laminas ServiceManager.
+
+If you need something different, there's nothing stopping you from writing your own functions (called [`ServiceProvider` builders](#serviceprovider-builders)) as well, and mixing them in with our pre-built behaviours.
 
 ## Core Types
 
