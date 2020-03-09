@@ -111,10 +111,10 @@ In your app, it's _your_ factory that grabs any dependencies from the container 
 
 Do this, and you'll find that the other argument against _service locator_ - that it's hard to test - also doesn't stand up to scrutiny.
 
-* Your service doesn't know anything about the DI container, so there's no impact on testing there.
+* Your service doesn't know anything about the DI container, so there's no impact on testing there. Your service remains as easy (or as hard) to test as it has always been.
 * Your factories do need a populated DI container, but that's the only place where coupling occurs.
 
-What happens in practice is that the tests for your factory also serve as extra, executable documentation of what dependencies your service needs, because the test needs to populate the DI container. It makes the list of dependencies explicit, in a way that even the service's constructor cannot.
+What happens in practice is that the tests for your factory also serve as extra, executable documentation of what dependencies your service needs, because the test needs to populate the DI container. It makes the list of dependencies explicit, in a way that even the service's constructor cannot. New developers can look at the tests, and see exactly what dependencies each service has.
 
 We've successfully - and safely - used factory-driven service locators on many projects, including a busy payment system for central government. We've successfully handed these projects over to other developers, who had no difficulty in continuing to use factory-driven service locators long after we'd left the project.
 
