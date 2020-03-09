@@ -6,6 +6,12 @@ This TypeScript library provides a factory-driven dependency injection (DI) cont
 
 - [Introduction](#introduction)
 - [Quick Start](#quick-start)
+- [Why Use ServiceManager?](#why-use-servicemanager)
+  - [Is An Alternative Better For You?](#is-an-alternative-better-for-you)
+  - [The Case For Dependency Injection](#the-case-for-dependency-injection)
+  - [The Case For Factories](#the-case-for-factories)
+  - [Type Integrity Baked In](#type-integrity-baked-in)
+  - [Highly Customisable](#highly-customisable)
 - [Core Types](#core-types)
   - [ServiceManager](#servicemanager)
   - [AnyServiceManager](#anyservicemanager)
@@ -42,6 +48,59 @@ import { ServiceManager } from "@ganbarodigital/ts-lib-servicemanager/lib/v1"
 ```
 
 __VS Code users:__ once you've added a single import anywhere in your project, you'll then be able to auto-import anything else that this library exports.
+
+## Why Use ServiceManager?
+
+### Is An Alternative Better For You?
+
+There are other dependency injection libraries for TypeScript, and plenty of articles about how to write your own. The vast majority of these use `@decorators` to effectively create behaviour known as _auto-wiring_.
+
+You should definitely check them out. They might suit your needs better.
+
+### The Case For Dependency Injection
+
+_Dependency injection_ is often (mistakenly) referred to as _inversion of control_ (IoC for short). It's not IoC, it's its own thing.
+
+Libraries and modules inside apps use utility classes/functions, such as loggers. Without dependency injection, libraries and modules decide for themselves which utilities they are going to use.
+
+That causes problems in applications, where you often need everything to use the same utilities. An application that ends up using half a dozen different loggers will be very hard to deploy and maintain over time, for example.
+
+_Dependency injection_ solves this problem. The libraries and modules depend on shared interfaces, and your app passes in the actual utilities to use.
+
+### The Case For Factories
+
+_ServiceManager_ is based on a _factory-driven_ feature set from PHP's Laminas ServiceManager. It doesn't support `@decorators` - and probably never will.
+
+So why this approach?
+
+* The resulting code is much easier to trace and maintain. `@decorators` do save a lot of time when writing code for the first time, but it can be hard for future maintainers to trace through the code and work out exactly how it is working.
+* The compiled JavaScript looks much more like the original TypeScript. That makes it easier to respond to runtime failures, and map the JavaScript error stack trace to your original code.
+* It's your app that decides which factories are used to create each service. That puts you - the app author - in control, not the library. That's what _inversion of control_ is actually about.
+
+In our experience, these benefits are worth the little bit of extra effort required to write factory-driven DI code.
+
+### Type Integrity Baked In
+
+A _dependency injection container_ (DI container for short) has to hold many different types of object. That's its job. That also means that you don't get the compile-time checks that make TypeScript worth using.
+
+You end up either:
+
+* using typecasts (such as `as XXX`) to tell the compiler to trust that you have the right object from the DI container, or
+* using type guards to prove to the compiler that you have the object you asked the DI container for
+
+Typecasts are dangerous as hell. *They transfer all the risk to when your code runs*. If there's a problem, you only find out about it when your code goes bang.
+
+Type guards are safe, but *they transfer all the costs to when your code runs*. Every time you retrieve a service from the DI container, those guards have to be run. Those costs quickly add up, and slow down your app.
+
+With ServiceManager, we've found a way to make it hold different types of object _and_ still have compile-time type information that you can trust.
+
+### Highly Customisable
+
+At its heart, the ServiceManager is an object that calls a function to retrieve your service object. _You_ decide which function it calls for each service.
+
+And that means *you can customise it to behave however you need*.
+
+We've shipped [a bunch of pre-built functions](#table-of-serviceprovider-builders) that cover the behaviours you'll probably want the most. If you need something different, there's nothing stopping you from writing your own functions (called [`ServiceProvider` builders](#serviceprovider-builders)) as well.
 
 ## Core Types
 
