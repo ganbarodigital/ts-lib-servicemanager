@@ -155,7 +155,7 @@ const logger = container.services.logger();
 // or you can do this,
 //
 // but you have to use a typecast (not recommended)
-// or type guards (incurns runtime penalty) to ensure
+// or type guards (has a runtime cost) to ensure
 // that `logger` has the expected type
 //
 // this is what you will have to do in importable packages,
