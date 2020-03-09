@@ -95,15 +95,18 @@ Obviously, we don't agree :)
 
 That article is 10 years old (at the time of writing this README), and we believe that it doesn't stand up to widespread practical experience in the years since. The PHP Community - one of the largest programming communities on Earth - has been successfully and safely using service locator-based DI containers for the last 7+ years.
 
-The main flaw in the article is that all of its arguments and examples are based on the DI container being a `static` class that's invisibly consumed by services. These `static` singletons are well-known to be terrible pieces of software design. Remove the `static` singleton from the examples, and the arguments largely fall away too.
+The main flaw in the article is that all of its arguments and examples are based on the DI container being a `static` class that's invisibly consumed by services. Today, these `static` singletons are well-known to be terrible pieces of software design. Remove the `static` singleton from the examples, and the arguments largely fall away too.
 
 (In 2010, the author may not have known that `static` singletons were terrible software design.)
 
 Setting aside the examples, the article's underlying premise is that **it's bad software design to have silent dependencies**. We certainly agree with that. If _any_ piece of code has dependencies that you cannot see, you do have no way of knowing what dependencies the service relies on, until you run it and it falls over. That's a robustness issue, and it may not get caught until the code is in production.
 
-That is not a problem with the _service locator pattern_. It's a problem caused by breaking the principle of encapsulation. Fortunately, it's an easy problem to avoid in practice:
+That is not a problem with the _service locator pattern_. It's a problem caused by breaking the principle of encapsulation.
 
-* pass the dependencies into your service's constructor, not the container itself,
+Fortunately, it's an easy problem to avoid in practice:
+
+* do not pass the DI container itself into any of your services,
+* pass the dependencies into your service's constructor;
 * use factories to decouple the service from the container,
 * and don't use `static` singletons for your DI container in the first place
 
