@@ -21,26 +21,27 @@ For each release, changes are grouped under these headings:
 
 The following changes have been completed, and will be included in the next tagged release.
 
-### Backwards-Compatibility Breaks
+## v0.1.0
+
+Released Tuesday, 10th March 2020.
 
 ### New
 
-### Fixes
+* Added `DependencyNotFoundError` error class
+* Added `OptionsPreparer` function type
+* Added `OPTIONS_PREPARER_DEFAULT` function
+* Added `OPTIONS_PREPARER_NO_CLONE` function
+* Added `ServiceAction` function type
+* Added `ServiceProducer` function type
+* Added `ServiceProvider` function type
+* Added `ServiceManager` class
+* Added `ServicesList` interface
+* Added `AnyServiceManager` type alias
+* Added `aliasFor()` ServiceProvider builder
+* Added `existingService()` ServiceProvider builder
+* Added `sharedInstance()` ServiceProvider builder
+* Added `uniqueInstance()` ServiceProvider builder
 
 ### Dependencies
 
-### Tools
-
-## v0.0.1
-
-Released Monday, 1st January 2020.
-
-### Backwards-Compatibility Breaks
-
-### New
-
-### Fixes
-
-### Dependencies
-
-### Tools
+* Added `rfdc`

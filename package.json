@@ -1,6 +1,6 @@
 {
   "name": "@ganbarodigital/ts-lib-servicemanager",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Factory-driven dependency injection (DI) container, based on Laminas ServiceManager",
   "repository": "github:ganbarodigital/ts-lib-servicemanager",
   "main": "lib/index.js",
@@ -25,7 +25,12 @@
   ],
   "license": "BSD-3-Clause",
   "dependencies": {
+    "@ganbarodigital/ts-lib-error-reporting": "^0.2.1",
+    "@ganbarodigital/ts-lib-http-types": "^0.1.5",
+    "@ganbarodigital/ts-lib-packagename": "^0.2.3",
     "@types/node": "^13.1.2",
+    "@types/rfdc": "^1.1.0",
+    "rfdc": "^1.1.4",
     "tslint": "^5.20.1",
     "typescript": "^3.8.0"
   },
