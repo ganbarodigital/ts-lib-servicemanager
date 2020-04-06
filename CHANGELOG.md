@@ -21,6 +21,15 @@ For each release, changes are grouped under these headings:
 
 The following changes have been completed, and will be included in the next tagged release.
 
+## v0.1.2
+
+Released Monday, 6th April 2020.
+
+### Dependencies
+
+* Updated to latest package releases
+* Moved TypeScript et al into the list of dev dependencies
+
 ## v0.1.1
 
 Released Tuesday, 10th March 2020.
