@@ -31,12 +31,7 @@
 // ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 //
-import {
-    ErrorTable,
-    ErrorTableTemplateWithNoExtraData,
-    ExtraDataTemplate,
-    NoExtraDataTemplate,
-} from "@ganbarodigital/ts-lib-error-reporting/lib/v1";
+import { ErrorTable, ErrorTableTemplate } from "@ganbarodigital/ts-lib-error-reporting/lib/v1";
 import { httpStatusCodeFrom } from "@ganbarodigital/ts-lib-http-types/lib/v1";
 import { packageNameFrom } from "@ganbarodigital/ts-lib-packagename/lib/v1";
 
@@ -44,9 +39,7 @@ import { DependencyNotFoundTemplate } from "./DependencyNotFound";
 
 const PACKAGE_NAME = packageNameFrom("@ganbarodigital/ts-lib-servicemanager");
 
-type PackageErrorTableIndex<T extends ErrorTable> = ErrorTableTemplateWithNoExtraData<
-    T, string, ExtraDataTemplate | NoExtraDataTemplate
->;
+type PackageErrorTableIndex<T extends ErrorTable> = ErrorTableTemplate<T, string>;
 
 export class PackageErrorTable implements ErrorTable {
     // tslint:disable-next-line: max-line-length
@@ -57,11 +50,6 @@ export class PackageErrorTable implements ErrorTable {
         errorName: "dependency-not-found",
         detail: "requested service not found in the DI container",
         status: httpStatusCodeFrom(500),
-        extra: {
-            logsOnly: {
-                serviceName: "put the name of the missing service here",
-            },
-        },
     };
 }
 

@@ -34,7 +34,7 @@
 import {
     AppError,
     AppErrorParams,
-    ErrorTableTemplateWithExtraData,
+    ErrorTableTemplate,
     ExtraLogsOnlyData,
     StructuredProblemReport,
     StructuredProblemReportDataWithExtraData,
@@ -48,10 +48,9 @@ export interface DependencyNotFoundExtraData extends ExtraLogsOnlyData {
     };
 }
 
-export type DependencyNotFoundTemplate = ErrorTableTemplateWithExtraData<
+export type DependencyNotFoundTemplate = ErrorTableTemplate<
     PackageErrorTable,
-    "dependency-not-found",
-    DependencyNotFoundExtraData
+    "dependency-not-found"
 >;
 
 export type DependencyNotFoundData = StructuredProblemReportDataWithExtraData<

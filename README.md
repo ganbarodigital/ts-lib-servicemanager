@@ -1,5 +1,7 @@
 # ServiceManager for Typescript
 
+![Node.js CI](https://github.com/ganbarodigital/ts-lib-servicemanager/workflows/Node.js%20CI/badge.svg)
+
 ## Introduction
 
 This TypeScript library provides a factory-driven dependency injection (DI) container, based on [Laminas' ServiceManager](https://docs.laminas.dev/laminas-servicemanager/).
